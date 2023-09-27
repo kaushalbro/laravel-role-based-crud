@@ -16,11 +16,11 @@
                 border-radius: 10px;
                 height: 30px;
                 width: 200px;
-                color: white;   
+                color: white;
                 background-color: #858686;
                 border: 1px solid white;
             }
-            
+
             .feedback_input_container,
             #feedback_validation {
                 display: flex;
@@ -104,13 +104,16 @@
                             <input type="text" name="user_search" class="user_search me-1" placeholder='Search user'>
                         </form>
                         <div class="user_list">
-                            @foreach ($users as $user)
-                                <a href="#" class="user_name "
-                                    onclick="getUserTask('/user/{{ $user->id }}/tasks','GET','{{ $user->name }}')"
-                                    title="{{ $user->name }}">
-                                    {{ strtoupper($user->name[0]) . $user->name[1] }}
-                                </a>
-                            @endforeach
+                            @if (count($users) > 0)
+                                @foreach ($users as $user)
+                                    <a href="#" class="user_name "
+                                        onclick="getUserTask('/user/{{ $user->id }}/tasks','GET','{{ $user->name }}')"
+                                        title="{{ $user->name }}">
+                                        {{ strtoupper($user->name[0]) . $user->name[1] }}
+                                    </a>
+                                @endforeach
+                            @endif
+
                         </div>
                     </div>
                 </div>
@@ -360,6 +363,34 @@
 @endsection
 @push('script')
     <script>
+        
+        function individual_task(task) {
+            return `<div class="task {{ $task->id }}" draggable="true" ondragstart="drag(event)"
+        data-id="{{ $task->id }}">
+        <div class="task_data">
+            <p class="task_name">{{ $task->name }}</p>
+        </div>
+        <div class="task_action">
+            @if ($task->priority === 'high')
+                <i class="fa-solid fa-angles-up text-danger" title="High Priority"></i>
+            @elseif ($task->priority === 'medium')
+                <i class="fa-solid fa-angles-up text-warning" title="Medium Priority"></i>
+            @elseif ($task->priority === 'low')
+                <i class="fa-solid fa-angles-down text-primary" title="Low Priority"></i>
+            @endif
+            <i id="create_task" onclick="getTaskcreatePage('/tasks/'+{{ $task->id }},'GET')"  class="fa-regular fa-eye" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+            @can('task create', 'task delete')
+                <i onclick="requestHttp('/tasks/'+{{ $task->id }} + '/edit','GET')"
+                    class="fa-solid fa-pen-to-square"></i>
+                <i onclick="requestHttp('/tasks/'+{{ $task->id }},'DELETE')"
+                    class="fa-solid fa-trash"></i>
+            @endcan
+        </div>
+    </div>`
+        }
+
+
+
         $(document).ready(function() {
             // Listen for a click event on the search input field
             $(".user_search").click(function() {
@@ -391,8 +422,8 @@
         }
     </script>
     <script>
-
         updateTask_count();
+
         function updateTask_count() {
             var total_length_todo = $("#todo_task").children().length;
             var total_length_in_progress = $("#inprogress_tasks").children().length;
@@ -447,7 +478,6 @@
             document
                 .querySelector(`[data-id="${event.dataTransfer.getData("text/plain")}"]`)
                 .remove();
-
             event.currentTarget.innerHTML =
                 event.currentTarget.innerHTML + event.dataTransfer.getData("text/html");
 
@@ -464,7 +494,8 @@
                 document.getElementById('feedback_input').value = '';
                 rejected_task_id = task_id;
             }
-        };          
+        };
+
         function rejectedReason() {
             result = document.getElementById('feedback_input').value;
             if (result == '') {
@@ -502,6 +533,7 @@
             })
         }
 
+
         function getUserTask(url_, method, user_name) {
             var token = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
@@ -511,6 +543,8 @@
                     'X-CSRF-TOKEN': token
                 },
                 success: function(data) {
+
+                    // 
 
                     $('#indivisual_user_name').text("Task's of: " + user_name);
                     const pendingTasks = data.filter(function(task) {
@@ -528,7 +562,7 @@
                     const rejected_tasks = data.filter(function(task) {
                         return task.status === 'rejected';
                     });
-                    console.log(rejected_tasks);
+                    // console.log(rejected_tasks);
 
                     $("#todo_task").empty();
                     $("#inprogress_tasks").empty();
@@ -536,44 +570,33 @@
                     $("#in_review_tasks").empty();
                     $("#rejected_tasks").empty();
 
-                    function individual_task(task) {
-                        return `   <div class="task {{ $task->id }}" draggable="true" ondragstart="drag(event)"
-                    data-id="{{ $task->id }}">
-                    <div class="task_data">
-                        <p class="task_name">{{ $task->name }}</p>
-                    </div>
-                    <div class="task_action">
-                        @if ($task->priority === 'high')
-                            <i class="fa-solid fa-angles-up text-danger" title="High Priority"></i>
-                        @elseif ($task->priority === 'medium')
-                            <i class="fa-solid fa-angles-up text-warning" title="Medium Priority"></i>
-                        @elseif ($task->priority === 'low')
-                            <i class="fa-solid fa-angles-down text-primary" title="Low Priority"></i>
-                        @endif
-                        <i id="create_task" onclick="getTaskcreatePage('/tasks/'+{{ $task->id }},'GET')"  class="fa-regular fa-eye" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
-                        @can('task create', 'task delete')
-                            <i onclick="requestHttp('/tasks/'+{{ $task->id }} + '/edit','GET')"
-                                class="fa-solid fa-pen-to-square"></i>
-                            <i onclick="requestHttp('/tasks/'+{{ $task->id }},'DELETE')"
-                                class="fa-solid fa-trash"></i>
-                        @endcan
-                    </div>
-                </div>`
-                    }
+
                     pendingTasks.forEach(task => {
-                        $('#todo_task').append(individual_task(task));
+                        if (task) {
+                            $('#todo_task').append(individual_task(task));
+                        }
                     });
                     completedTask.forEach(task => {
-                        $('#completed_task').append(individual_task(task));
+                        if (task) {
+                            $('#completed_task').append(individual_task(task));
+                        }
                     });
                     in_progress_task.forEach(task => {
-                        $('#inprogress_tasks').append(individual_task(task));
+                        if (task) {
+                            $('#inprogress_tasks').append(individual_task(task));
+
+                        }
                     });
                     in_review_tasks.forEach(task => {
-                        $('#in_review_tasks').append(individual_task(task));
+                        if (task) {
+                            $('#in_review_tasks').append(individual_task(task));
+
+                        }
                     });
                     rejected_tasks.forEach(task => {
-                        $('#rejected_tasks').append(individual_task(task));
+                        if (task) {
+                            $('#rejected_tasks').append(individual_task(task));
+                        }
                     });
                     updateTask_count();
                 },

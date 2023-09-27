@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\TaskUpdateRequest;
+use App\Notifications\taskCreated;
+use Illuminate\Support\Facades\Notification;
 
 class TaskController extends Controller
 {
@@ -27,6 +29,7 @@ class TaskController extends Controller
         return view('tasks.index', compact('tasks', 'users'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
+
     public function setStatus($task, $status)
     {
         $task = Task::find($task);
@@ -77,19 +80,89 @@ class TaskController extends Controller
                 'user_id' => $request->assigned_to,
             ]
         );
-
+        $user = User::find(2);
+        $posts = [
+            'name' => 'kausahl',
+            'ghar' => 'bange'
+        ];
+        Notification::send($user, new taskCreated($posts));
         return redirect()->route('tasks.index')->with('success', 'task created successfully');
     }
+
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
         $task = Task::find($id);
-        return view('tasks.show', compact('task'));
+        // $task_review =  DB::raw("SELECT * FROM tasks INNER JOIN task_reviews ON tasks.id = task_reviews.task_id​");
+        $task_reviews = DB::table('tasks')->selectRaw('task_reviews.*')
+            ->join('task_reviews', 'tasks.id', 'task_reviews.task_id')->where('tasks.id', '=', $id)->get();
+        $task['task_review'] = $task_reviews->toArray();
+        // $ta= $task->map(function ($task_reviews) {
+        //     return [$task_reviews];
+        // });
+
+        // // dd($task_reviews);
+        // $task_reviews = DB::table('task_reviews')->selectRaw('tasks.*, task_reviews.*')
+        //     ->join('tasks', 'task_reviews.task_id', 'tasks.id')->where('tasks.id', '=', $id)->get();
+
+
+        // $result = [];
+
+        // // Use a loop to map the results into a nested array structure
+        // foreach ($task_reviews as $row) {
+        //     // Check if there is an existing array for this "id" in the result
+        //     if (!isset($result[$row->id])) {
+        //         // If not, create a new array with the "id" as the key
+        //         $result[$row->id] = ['id' => $row->id, 'table2_data' => []];
+        //     }
+        //     // Add the table2 data to the nested array under "table2_data"
+        //     $result[$row->id]['table2_data'][] = $row->column_from_table2;
+        // }
+
+        // // Convert the result into a simple array
+        // $result = array_values($result);
+
+        // Now, $result contains the nested array structure
+        dd(($task->toArray()));
+
+        // $customResult = [
+        //     'task_id' => $task_reviews->id,
+        //     'task_name' => $task_reviews->name,
+        //     'task_description' => $task_reviews->description,
+        //     'reviews' => $taskWithReviews->reviews->map(function ($review) {
+        //         return [
+        //             'review_id' => $review->id,
+        //             'status' => $review->status,
+        //             'message' => $review->message,
+        //             // Add more review attributes as needed
+        //         ];
+        //     })->toArray(),   
+
+        // $task_reviews = DB::table('tasks')
+        //     ->selectRaw('tasks.name , task_reviews.message, task_reviews.status')
+        //     ->join('task_reviews', 'tasks.id', '=', 'task_reviews.task_id')
+        //     ->where('tasks.id', '=', $id)
+        //     ->get();
+        //     // Now, you can map the results together
+        //     $combinedResults = $task_reviews->map(function ($item) {
+        //     return [
+        //         'name' => $item->name,
+        //         'status' => $item->status,
+        //         'message' => $item->message,
+        //     ];
+        // });
+
+        // dd($combinedResults);
+
+
+
+        return view('tasks.show', compact('task', 'task_reviews'));
     }
     /**
      * Show the form for editing the specified resource.

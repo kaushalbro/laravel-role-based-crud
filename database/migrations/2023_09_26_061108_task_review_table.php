@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::create('task_reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('task_id')->nullable()->constrainted('tasks')->cascadeOnDelete();
+            // $table->foreignId('task_id')->nullable()->constrainted('tasks')->cascadeOnDelete();
+            $table->foreignId('task_id')
+                ->references('id')->on('tasks')
+                ->onDelete('cascade');
             $table->string('status');
             $table->string('message');
             $table->timestamps();

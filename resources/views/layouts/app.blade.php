@@ -27,6 +27,24 @@
         .navbar-nav li a {
             color: rgb(227, 223, 223);
         }
+        .logo a img {
+            height: 70px;
+            width: 50px;
+        }
+        /* .navbar-nav li a {
+            color: white;
+            font-size: 16px;
+            border: 1px solid rgb(108, 100, 100);
+            padding: 2px;
+            font-weight: 500;
+            margin: 6px;
+            border-radius: 10px;
+            box-shadow: rgb(85, 91, 255) 0px 0px 0px 2px, rgb(31, 193, 27) 0px 0px 0px 2px, rgb(255, 217, 19) 0px 0px 0px 3px, rgb(255, 156, 85) 0px 0px 0px 4px, rgb(255, 85, 85) 0px 0px 0px 5px;
+        }
+        .navbar-nav li a:hover {
+            color: red;
+            padding: 2px;
+        } */
     </style>
 </head>
 
@@ -35,64 +53,73 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
 
             <div class="container">
-                <button class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <div class="logo">
+                    <a href="/"> <img
+                            src="https://static.wikia.nocookie.net/logopedia/images/0/09/Taskmgrtvr.png/" alt=""
+                            title="Task Manager"></a>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto"></ul>
-
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
-                            <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
-                        @else
-                            @can('user list')
-                                <li><a class="nav-link" href="{{ route('users.index') }}">Manage Users</a></li>
-                            @endcan
-                            @can('role-list')
-                                <li><a class="nav-link" href="{{ route('roles.index') }}">Manage Role</a></li>
-                            @endcan
-                            @can('product-list')
-                                <li><a class="nav-link" href="{{ route('products.index') }}">Manage Product</a></li>
-                            @endcan
-                            @can('task list')
-                                <li><a class="nav-link" href="{{ route('tasks.index') }}">Manage Tasks</a></li>
-                            @endcan
-                            @role('Editor')
-                                <li><a class="nav-link" href="{{ route('tasks.index') }}">My Tasks</a></li>
-                            @endrole
-
-                            <li><a class="nav-link" href="{{ route('activity_log.index') }}">List Activity</a></li>
-
-                            <li class="nav-link">
-                                <div class="dropdown">
-                                    <a class=" dropdown-toggle" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        {{ Auth::user()->name }}
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li>
-                                            <a class="dropdown-item" href="{{ route('logout') }}" onclick="logout()">
-                                                {{ __('Logout') }}
-                                            </a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                                style="display: none;">
-                                                @csrf
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
                 </div>
+                <div class="nav_link">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <!-- Left Side Of Navbar -->
+                        <ul class="navbar-nav mr-auto"></ul>
+                        <!-- Right Side Of Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <!-- Authentication Links -->
+                            @guest
+                                <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                                <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                            @else
+                                @can('user list')
+                                    <li><a class="nav-link" href="{{ route('users.index') }}">Manage Users</a></li>
+                                @endcan
+                                @can('role-list')
+                                    <li><a class="nav-link" href="{{ route('roles.index') }}">Manage Role</a></li>
+                                @endcan
+                                @can('product-list')
+                                    <li><a class="nav-link" href="{{ route('products.index') }}">Manage Product</a></li>
+                                @endcan
+                                @can('task list')
+                                    <li><a class="nav-link" href="{{ route('tasks.index') }}">Manage Tasks</a></li>
+                                @endcan
+                                @role('Editor')
+                                    <li><a class="nav-link" href="{{ route('tasks.index') }}">My Tasks</a></li>
+                                @endrole
+
+                                <li><a class="nav-link" href="{{ route('activity_log.index') }}">List Activity</a></li>
+
+                                <li class="nav-link">
+                                    <div class="dropdown">
+                                        <a class=" dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            {{ Auth::user()->name }}
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="logout()">
+                                                    {{ __('Logout') }}
+                                                </a>
+                                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                    style="display: none;">
+                                                    @csrf
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                            @endguest
+                        </ul>
+                    </div>
+                </div>
+
+
+
             </div>
         </nav>
 

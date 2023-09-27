@@ -21,8 +21,6 @@ class TaskSeeder extends Seeder
             'creator' => Auth::id(),
             'status' => 'pending'
         ]);
-        // $task_1->tasks()->save($user);
-        // dd($task_1->id,$user->id);
-        // $task_1->user()->create(['task_id' => $task_1->id, 'user_id' => $user->id]);
+        
     }
 }
