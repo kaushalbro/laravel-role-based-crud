@@ -16,10 +16,11 @@
                 border-radius: 10px;
                 height: 30px;
                 width: 200px;
+                color: white;   
                 background-color: #858686;
                 border: 1px solid white;
             }
-
+            
             .feedback_input_container,
             #feedback_validation {
                 display: flex;
@@ -390,8 +391,8 @@
         }
     </script>
     <script>
-        updateTask_count();
 
+        updateTask_count();
         function updateTask_count() {
             var total_length_todo = $("#todo_task").children().length;
             var total_length_in_progress = $("#inprogress_tasks").children().length;
@@ -404,11 +405,9 @@
             $('#in_review_task_count').text(in_review_task);
             $('#rejected_task_count').text(rejected_tasks);
         }
-        
         const allowDrop = (event) => {
             event.preventDefault();
         };
-
         const dragStart = (event) => {
             event.currentTarget.classList.add("dragging");
         };
@@ -465,8 +464,7 @@
                 document.getElementById('feedback_input').value = '';
                 rejected_task_id = task_id;
             }
-        };
-
+        };          
         function rejectedReason() {
             result = document.getElementById('feedback_input').value;
             if (result == '') {
