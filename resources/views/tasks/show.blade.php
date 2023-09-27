@@ -34,8 +34,9 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Task_review:</strong>
-                @foreach ($task_reviews as $task_review)
-                    {{ $task_review->message }}
+                {{-- {{$task->task_reviews}} --}}
+                @foreach ($task->task_reviews as $review)
+                    {{ $review->message }}
                 @endforeach
             </div>
         </div>
