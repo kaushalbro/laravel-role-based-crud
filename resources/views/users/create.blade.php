@@ -12,8 +12,7 @@
             </div>
         </div>
     </div>
-
-
+    
     {!! Form::open(['route' => 'users.store', 'method' => 'POST']) !!}
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">
@@ -54,7 +53,7 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Role:</strong>
+                <strong>Role:k</strong>
                 {!! Form::select('roles[]', $roles, [], ['class' => 'form-control', 'multiple']) !!}
                 @error('roles')
                     <div class="text-danger">{{ $message . '*' }}</div>

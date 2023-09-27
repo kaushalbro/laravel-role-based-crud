@@ -21,11 +21,19 @@ class PermissionTableSeeder extends Seeder
             'product-list',
             'product-create',
             'product-edit',
-            'product-delete'
-         ];
-      
-         foreach ($permissions as $permission) {
-              Permission::create(['name' => $permission]);
-         }
+            'product-delete',
+            'task edit',
+            'task create',
+            'task delete',
+            'task list',
+            'user edit',
+            'user create',
+            'user delete',
+            'user list'
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'web']);
+        }
     }
 }

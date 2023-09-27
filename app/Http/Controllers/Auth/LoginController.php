@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Spatie\Activitylog\LogOptions;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -10,7 +11,9 @@ class LoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
+    
     | Login Controller
+
     |--------------------------------------------------------------------------
     |
     | This controller handles authenticating users for the application and
@@ -20,7 +23,10 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
-
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
     /**
      * Where to redirect users after login.
      *

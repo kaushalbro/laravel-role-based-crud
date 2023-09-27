@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
@@ -17,24 +18,30 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    function __construct()
+    {
+        $this->middleware('permission:user list|user create|user edit|user delete', ['only' => ['index', 'store']]);
+        $this->middleware('permission:user create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:user edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:user delete', ['only' => ['destroy']]);
+    }
     public function index(Request $request)
     {
         $data = User::orderBy('id', 'DESC')->paginate(5);
         return view('users.index', compact('data'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
-
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create()
     {
         $roles = Role::pluck('name', 'name')->all();
         return view('users.create', compact('roles'));
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -49,15 +56,15 @@ class UserController extends Controller
             'password' => 'required|same:confirm-password',
             'roles' => 'required'
         ]);
-
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
-
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
 
-        return redirect()->route('users.index')
-            ->with('success', 'User created successfully');
+        $activity = Activity::all()->last();
+        $activity->description = $request->name . 'User Created'; //returns 'created'
+        $activity->changes; //returns ['attributes' => ['name' => 'original name', 'text' => 'Lorum']];
+        return redirect()->route('users.index')->with('success', 'User created successfully');
     }
 
     /**

@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-
 @section('content')
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -12,8 +9,6 @@
             </div>
         </div>
     </div>
-  
-
     <form action="{{ route('products.store') }}" method="POST">
         @csrf
         <div class="row">
