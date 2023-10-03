@@ -19,8 +19,7 @@ class TaskController extends Controller
         $this->middleware('permission:task create', ['only' => ['create', 'store']]);
         $this->middleware('permission:task edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:task delete', ['only' => ['destroy']]);
-    }
-
+    }   
     public function index(Request $request)
     {
         // $completed_tasks = Task::orderBy('id', 'DESC')->where('status', '=', 'completed')->with('user')->paginate(10);
@@ -85,7 +84,7 @@ class TaskController extends Controller
             'name' => 'kausahl',
             'ghar' => 'bange'
         ];
-        Notification::send($user, new taskCreated($posts));
+        // Notification::send($user, new taskCreated($posts));
         return redirect()->route('tasks.index')->with('success', 'task created successfully');
     }
 
@@ -100,9 +99,13 @@ class TaskController extends Controller
     {
         $task = Task::find($id);
         // $task_review =  DB::raw("SELECT * FROM tasks INNER JOIN task_reviews ON tasks.id = task_reviews.task_id​");
-        $task_reviews = DB::table('tasks')->selectRaw('task_reviews.*')
-            ->join('task_reviews', 'tasks.id', 'task_reviews.task_id')->where('tasks.id', '=', $id)->get();
+        $task_reviews = DB::table('tasks')->selectRaw('task_reviews.*,users.name AS assigned_TO')
+            ->join('task_reviews', 'tasks.id', 'task_reviews.task_id')
+            ->join('task_users', 'tasks.id', 'task_users.task_id')
+            ->join('users', 'task_users.user_id', 'users.id')
+            ->where('tasks.id', '=', $id)->get();
         $task['task_reviews'] = $task_reviews;
+        // dd($task);
         return view('tasks.show', compact('task'));
     }
     /**

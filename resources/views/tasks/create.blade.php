@@ -10,7 +10,7 @@
     </style>
 @endpush
 @section('content')
-{{-- login form started --}}
+    {{-- login form started --}}
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
@@ -77,6 +77,7 @@
             <div class="form-group">
                 <strong>Assign to user:</strong>
                 <select name="assigned_to" id="assigned_to">
+                    <option value="not-assigned" selected>Not assign</option>
                     @foreach ($users as $user)
                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach

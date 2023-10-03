@@ -27,10 +27,12 @@
         .navbar-nav li a {
             color: rgb(227, 223, 223);
         }
+
         .logo a img {
             height: 70px;
             width: 50px;
         }
+
         /* .navbar-nav li a {
             color: white;
             font-size: 16px;
@@ -101,8 +103,13 @@
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="logout()">
+                                                <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                                                    onclick="logout()">
                                                     {{ __('Logout') }}
+                                                </a>
+                                                <a class="dropdown-item text-danger"
+                                                    href="{{ route('profile.show', Auth::id()) }}">
+                                                    Profile
                                                 </a>
                                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                                     style="display: none;">

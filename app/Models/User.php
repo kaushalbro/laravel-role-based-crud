@@ -21,7 +21,7 @@ class User extends Authenticatable
     {
         return LogOptions::defaults();
     }
-
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -30,11 +30,13 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'image',
         'password',
     ];
+
     /**
      * The attributes that should be hidden for serialization.
-     *
+     *  
      * @var array<int, string>
      */
     protected $hidden = [
@@ -57,7 +59,7 @@ class User extends Authenticatable
         return $this->hasManyThrough(Task::class, TaskUser::class, 'user_id', 'id', 'id', 'task_id'); //grab task_id and insert into Pivot table //task belong to user on task_users table
     }
 
-    
+
 
     public function role()
     {

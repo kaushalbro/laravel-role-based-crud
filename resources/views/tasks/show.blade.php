@@ -33,17 +33,22 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Task_review:</strong>
-                {{-- {{$task->task_reviews}} --}}
-                @foreach ($task->task_reviews as $review)
-                    {{ $review->message }}
-                @endforeach
+                {{$task}}
+                @if (count($task->task_reviews) > 0)
+                    {{-- {{$task->task_reviews}} --}}
+                    @foreach ($task->task_reviews as $review)
+                        @if ($review->status == 'rejected')
+                            <strong>Rejection :</strong>
+                            {{ $review->message }} : rejected on {{ $review->created_at }}<br>
+                        @endif
+                    @endforeach
+                @endif
+
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Assigned to:</strong>
-
                 @if (isset($task->user))
                     {{ $task->user->name }}
                 @else

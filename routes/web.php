@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\userProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect(route('login'));
 });
-
 Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::group(['middleware' => ['auth']], function () {
@@ -35,6 +35,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('update_task/{task}/{status}', [TaskController::class, 'setStatus'])->name('status.update');
     Route::get('/user/{user_id}/tasks/', [TaskController::class, 'getUserTask']);
     Route::post('/task_review/{task_id}/{status}/message={message}/', [TaskController::class, 'setTaskReview']);
+    
+    Route::group(['middleware' => ['isCurrentUser']], function () {
+        Route::get('/users/{user_id}/profile', [userProfileController::class, 'show'])->name('profile.show');
+        Route::get('/users/{user_id}/profile/edit', [userProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/users/{user_id}/profile', [userProfileController::class, 'update'])->name('profile.update');
+    });
 });
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

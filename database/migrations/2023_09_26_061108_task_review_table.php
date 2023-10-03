@@ -19,7 +19,7 @@ return new class extends Migration
                 ->references('id')->on('tasks')
                 ->onDelete('cascade');
             $table->string('status');
-            $table->string('message');
+            $table->string('message');  
             $table->timestamps();
         });
     }

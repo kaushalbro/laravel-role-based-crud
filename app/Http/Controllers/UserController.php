@@ -13,11 +13,6 @@ use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     function __construct()
     {
         $this->middleware('permission:user list|user create|user edit|user delete', ['only' => ['index', 'store']]);
@@ -124,15 +119,13 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        User::find($id)->delete();
+        $user = User::find($id);
+        if ($user->image) {
+            @unlink($user->image);
+        }
+        $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully');
     }
 }

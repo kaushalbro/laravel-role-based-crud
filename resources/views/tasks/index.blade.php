@@ -29,7 +29,6 @@
 
             #feedBackForm_id {
                 background-color: #858686;
-
             }
 
             #btn_rejection_submit {
@@ -103,6 +102,7 @@
                         <form action="#" method="post">
                             <input type="text" name="user_search" class="user_search me-1" placeholder='Search user'>
                         </form>
+
                         <div class="user_list">
                             @if (count($users) > 0)
                                 @foreach ($users as $user)
@@ -126,6 +126,7 @@
             <p>{{ $message }}</p>
         </div>
     @endif
+
     <div class="task_main_container">
         {{-- todo task --}}
         <div class="todo_task_container task_container">
@@ -309,6 +310,31 @@
         {{-- main ending --}}
     </div>
 
+    {{-- function individual_task(task) {
+        return `<div class="task {{ $task->id }}" draggable="true" ondragstart="drag(event)"
+    data-id="{{ $task->id }}">
+    <div class="task_data">
+        <p class="task_name">{{ $task->name }}</p>
+    </div>
+    <div class="task_action">
+        @if ($task->priority === 'high')
+            <i class="fa-solid fa-angles-up text-danger" title="High Priority"></i>
+        @elseif ($task->priority === 'medium')
+            <i class="fa-solid fa-angles-up text-warning" title="Medium Priority"></i>
+        @elseif ($task->priority === 'low')
+            <i class="fa-solid fa-angles-down text-primary" title="Low Priority"></i>
+        @endif
+        <i id="create_task" onclick="getTaskcreatePage('/tasks/'+{{ $task->id }},'GET')"  class="fa-regular fa-eye" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+        @can('task create', 'task delete')
+            <i onclick="requestHttp('/tasks/'+{{ $task->id }} + '/edit','GET')"
+                class="fa-solid fa-pen-to-square"></i>
+            <i onclick="requestHttp('/tasks/'+{{ $task->id }},'DELETE')"
+                class="fa-solid fa-trash"></i>
+        @endcan
+    </div>
+</div>`
+    }           --}}
+
     <p class="text-center text-primary"><small></small></p>
     <table class="table table-bordered">
         <tr>
@@ -363,34 +389,6 @@
 @endsection
 @push('script')
     <script>
-        
-        function individual_task(task) {
-            return `<div class="task {{ $task->id }}" draggable="true" ondragstart="drag(event)"
-        data-id="{{ $task->id }}">
-        <div class="task_data">
-            <p class="task_name">{{ $task->name }}</p>
-        </div>
-        <div class="task_action">
-            @if ($task->priority === 'high')
-                <i class="fa-solid fa-angles-up text-danger" title="High Priority"></i>
-            @elseif ($task->priority === 'medium')
-                <i class="fa-solid fa-angles-up text-warning" title="Medium Priority"></i>
-            @elseif ($task->priority === 'low')
-                <i class="fa-solid fa-angles-down text-primary" title="Low Priority"></i>
-            @endif
-            <i id="create_task" onclick="getTaskcreatePage('/tasks/'+{{ $task->id }},'GET')"  class="fa-regular fa-eye" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
-            @can('task create', 'task delete')
-                <i onclick="requestHttp('/tasks/'+{{ $task->id }} + '/edit','GET')"
-                    class="fa-solid fa-pen-to-square"></i>
-                <i onclick="requestHttp('/tasks/'+{{ $task->id }},'DELETE')"
-                    class="fa-solid fa-trash"></i>
-            @endcan
-        </div>
-    </div>`
-        }
-
-
-
         $(document).ready(function() {
             // Listen for a click event on the search input field
             $(".user_search").click(function() {
@@ -423,6 +421,31 @@
     </script>
     <script>
         updateTask_count();
+
+        function individual_task(task) {
+            return `<div class="task {{ $task->id }}" draggable="true" ondragstart="drag(event)"
+    data-id="{{ $task->id }}">
+    <div class="task_data">
+        <p class="task_name">{{ $task->name }}</p>
+    </div>
+    <div class="task_action">
+        @if ($task->priority === 'high')
+            <i class="fa-solid fa-angles-up text-danger" title="High Priority"></i>
+        @elseif ($task->priority === 'medium')
+            <i class="fa-solid fa-angles-up text-warning" title="Medium Priority"></i>
+        @elseif ($task->priority === 'low')
+            <i class="fa-solid fa-angles-down text-primary" title="Low Priority"></i>
+        @endif
+        <i id="create_task" onclick="getTaskcreatePage('/tasks/'+{{ $task->id }},'GET')"  class="fa-regular fa-eye" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+        @can('task create', 'task delete')
+            <i onclick="requestHttp('/tasks/'+{{ $task->id }} + '/edit','GET')"
+                class="fa-solid fa-pen-to-square"></i>
+            <i onclick="requestHttp('/tasks/'+{{ $task->id }},'DELETE')"
+                class="fa-solid fa-trash"></i>
+        @endcan
+    </div>
+</div>`
+        }
 
         function updateTask_count() {
             var total_length_todo = $("#todo_task").children().length;
@@ -533,7 +556,6 @@
             })
         }
 
-
         function getUserTask(url_, method, user_name) {
             var token = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
@@ -563,13 +585,12 @@
                         return task.status === 'rejected';
                     });
                     // console.log(rejected_tasks);
-
+                    
                     $("#todo_task").empty();
                     $("#inprogress_tasks").empty();
                     $("#completed_task").empty();
                     $("#in_review_tasks").empty();
                     $("#rejected_tasks").empty();
-
 
                     pendingTasks.forEach(task => {
                         if (task) {
@@ -620,7 +641,10 @@
                     },
                     success: function(data, b) {
                         updateTask_count();
+                        console.log(data, b);
                         resolve(b);
+
+
                     },
                     error: function(error, textStatus, errorThrown) {
                         reject(errorThrown);
